@@ -380,6 +380,4 @@ git commit -m "Build HR Policy RAG assistant"
 git push
 ```
 
-Then Streamlit Cloud should redeploy automatically.
-
-**One important note:** this code expects your Groq account to have access to `llama-3.1-8b-instant`. If Streamlit gives you a model-related error, send me the error and we'll change only that part.
+.

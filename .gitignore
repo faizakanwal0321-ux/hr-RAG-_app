@@ -1,1 +1,17 @@
-# Python __pycache__/ *.py[cod] *.pyo # Virtual environment venv/ .venv/ env/ # Environment variables .env # IDE files .vscode/ .idea/ # Operating system .DS_Store Thumbs.db # Streamlit .streamlit/ # Generated files *.log
+```text
+__pycache__/
+*.pyc
+
+venv/
+.venv/
+
+.env
+
+.streamlit/
+
+.vscode/
+.idea/
+
+.DS_Store
+Thumbs.db
+```

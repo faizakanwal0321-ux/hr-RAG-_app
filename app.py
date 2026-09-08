@@ -362,22 +362,6 @@ if uploaded_file:
                 st.write(chunk)
 
                 st.divider()
-```
 
-### Your Streamlit Secret must be exactly:
-
-```toml
-GROQ_API_KEY = "GROQ_API_KEY"
-```
-
-And **do not put the actual key in GitHub**.
-
-After replacing `app.py`:
-
-```bash
-git add app.py
-git commit -m "Build HR Policy RAG assistant"
-git push
-```
 
 .

@@ -1,4 +1,3 @@
-
 import streamlit as st
 import fitz
 import faiss
@@ -29,14 +28,26 @@ st.write(
 # ==========================================
 
 try:
-    api_key = st.secrets["GROQ_API_KEY"]
-    client = Groq(api_key=api_key)
 
-except Exception:
-    st.error(
-        "Groq API key not found. "
-        "Please add GROQ_API_KEY in Streamlit Secrets."
+    api_key = st.secrets["GROQ_API_KEY"]
+
+    client = Groq(
+        api_key=api_key
     )
+
+except Exception as e:
+
+    st.error(
+        "❌ Groq API key not found."
+    )
+
+    st.code(str(e))
+
+    st.info(
+        "Please add GROQ_API_KEY in "
+        "Streamlit Cloud → Manage app → Settings → Secrets."
+    )
+
     st.stop()
 
 
@@ -210,21 +221,35 @@ USER QUESTION:
 ANSWER:
 """
 
-    response = client.chat.completions.create(
+    try:
 
-        model = "llama-3.1-8b-instant",
+        response = client.chat.completions.create(
 
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
+            model="llama-3.1-8b-instant",
 
-        temperature=0
-    )
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
 
-    return response.choices[0].message.content
+            temperature=0
+        )
+
+        return response.choices[0].message.content
+
+    except Exception as e:
+
+        st.error(
+            "❌ Groq API Error"
+        )
+
+        st.code(
+            str(e)
+        )
+
+        return "Unable to generate an answer."
 
 
 # ==========================================
@@ -262,20 +287,26 @@ if uploaded_file:
 
 
     st.success(
-        "PDF uploaded successfully!"
+        "✅ PDF uploaded successfully!"
     )
 
 
-    # Create chunks
+    # ======================================
+    # CREATE CHUNKS
+    # ======================================
 
-    chunks = create_chunks(text)
+    chunks = create_chunks(
+        text
+    )
 
     st.info(
-        f"Created {len(chunks)} text chunks."
+        f"📚 Created {len(chunks)} text chunks."
     )
 
 
-    # Create FAISS index
+    # ======================================
+    # CREATE FAISS INDEX
+    # ======================================
 
     with st.spinner(
         "Creating document search index..."
@@ -287,13 +318,14 @@ if uploaded_file:
 
 
     st.success(
-        "HR policy is ready! You can ask questions."
+        "✅ HR policy is ready! "
+        "You can ask questions."
     )
 
 
-    # ==========================================
+    # ======================================
     # 11. QUESTION
-    # ==========================================
+    # ======================================
 
     question = st.text_input(
         "💬 Ask a question about the HR policy"
@@ -302,8 +334,12 @@ if uploaded_file:
 
     if question:
 
+        # ==================================
+        # SEARCH DOCUMENT
+        # ==================================
+
         with st.spinner(
-            "Searching the HR policy..."
+            "🔎 Searching the HR policy..."
         ):
 
             relevant_chunks = search_documents(
@@ -314,17 +350,21 @@ if uploaded_file:
             )
 
 
-        # Combine retrieved chunks
+        # ==================================
+        # COMBINE RETRIEVED CHUNKS
+        # ==================================
 
         context = "\n\n".join(
             relevant_chunks
         )
 
 
-        # Generate answer
+        # ==================================
+        # GENERATE ANSWER
+        # ==================================
 
         with st.spinner(
-            "Generating answer..."
+            "🤖 Generating answer..."
         ):
 
             answer = generate_answer(
@@ -333,18 +373,22 @@ if uploaded_file:
             )
 
 
-        # ==========================================
+        # ==================================
         # 12. DISPLAY ANSWER
-        # ==========================================
+        # ==================================
 
-        st.subheader("💬 Answer")
+        st.subheader(
+            "💬 Answer"
+        )
 
-        st.write(answer)
+        st.write(
+            answer
+        )
 
 
-        # ==========================================
+        # ==================================
         # 13. SHOW RETRIEVED INFORMATION
-        # ==========================================
+        # ==================================
 
         with st.expander(
             "🔎 View retrieved policy sections"
@@ -359,6 +403,8 @@ if uploaded_file:
                     f"**Policy Section {number}**"
                 )
 
-                st.write(chunk)
+                st.write(
+                    chunk
+                )
 
                 st.divider()

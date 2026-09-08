@@ -1,0 +1,10 @@
+streamlit
+pymupdf
+faiss-cpu
+sentence-transformers
+groq
+numpy
+
+Install everything with:
+
+pip install -r requirements.txt
